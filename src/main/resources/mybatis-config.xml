@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+            "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--定义属性-->
+    <properties resource="jdbc.properties"/>
+
+    <!--设置mybatis功能-->
+    <settings>
+        <!--<setting name="logImpl" value="LOG4J2"/>-->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+
+    <!--设置类型别名-->
+    <typeAliases>
+        <!--<typeAlias alias="User" type="cn.shh.test.mybatis.pojo.User"/>-->
+        <package name="cn.shh.test.mybatis.pojo"/>
+    </typeAliases>
+    
+    <plugins>
+        <!--分页插件-->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
+    </plugins>
+
+    <!--
+        environments标签：配置环境信息。
+            - delfault：设置默认启用的环境（唯一）。
+            - id：环境ID。
+        transactionManager标签：
+            - type属性，可选属性值有2个：
+                - JDBC：这个配置直接使用了 JDBC 的提交和回滚功能，它依赖从数据源获得的连接来管理事务作用域。
+                - MANAGED：它从不提交或回滚一个连接，而是让容器来管理事务的整个生命周期。
+        dataSource标签：
+            - type属性，可选属性值有3个：
+                - UNPOOLED：每次请求时都会打开和关闭连接。
+                - POOLED：使用池化技术。
+                - JNDI：这个数据源实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，
+                        然后放置一个 JNDI 上下文的数据源引用。
+    -->
+    <environments default="dev">
+        <environment id="dev">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+        <environment id="test">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://localhost:3307/test_ssm?serverTimezone=UTC"/>
+                <property name="username" value="root"/>
+                <property name="password" value="root666"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--映射器-->
+    <mappers>
+        <!--<mapper resource="mappers/UserMapper.xml"/>-->
+        <package name="cn.shh.test.mybatis.mapper"/>
+    </mappers>
+</configuration>

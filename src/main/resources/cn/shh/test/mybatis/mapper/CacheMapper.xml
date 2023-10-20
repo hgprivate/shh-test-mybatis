@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.shh.test.mybatis.mapper.CacheMapper">
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"/>
+
+    <!--多对一，使用association标签-->
+    <resultMap id="empResult" type="Emp">
+        <id column="e_id" property="eId"/>
+        <result column="e_name" property="eName"/>
+        <result column="e_age" property="eAge"/>
+        <result column="e_gender" property="eGender"/>
+        <association property="dept" javaType="Dept">
+            <id column="d_id" property="dId"/>
+            <result column="d_name" property="dName"/>
+        </association>
+    </resultMap>
+    <!--多对一，使用association标签实现延迟加载-->
+    <resultMap id="empResult2" type="Emp">
+        <id column="e_id" property="eId"/>
+        <result column="e_name" property="eName"/>
+        <result column="e_age" property="eAge"/>
+        <result column="e_gender" property="eGender"/>
+        <association property="dept" select="cn.shh.test.mybatis.mapper.DeptMapper.getDeptById" column="d_id"/>
+    </resultMap>
+
+    <insert id="insert">
+        insert into tbl_emp(e_name, e_age, e_gender, d_id)
+        values (#{eName}, #{eAge}, #{eGender}, #{dId})
+    </insert>
+    <insert id="insertBatch">
+        insert into tbl_emp
+        values
+            <foreach collection="emps" item="emp" separator=",">
+                (null, #{emp.eName}, #{emp.eAge}, #{emp.eGender}, #{emp.dept.dId})
+            </foreach>
+    </insert>
+
+    <select id="getEmp" parameterType="Emp" resultMap="empResult2">
+        select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
+        from tbl_emp e
+        left join tbl_dept d on e.d_id = d.d_id
+        <where>
+            <if test="eId != null and eId !=''">e.e_id = #{eId}</if>
+            <if test="eName != null and eName !=''">and e.e_name = #{eName}</if>
+            <if test="eAge != null and eAge !=''">and e.e_age = #{eAge}</if>
+            <if test="eGender != null and eGender !=''">and e.e_gender = #{eGender}</if>
+            <if test="dept != null and dept != ''">
+                <if test="dept.dId != null and dept.dId !=''">and e.d_id = #{dept.dId}</if>
+            </if>
+        </where>
+    </select>
+
+    <select id="getAllEmp" resultMap="empResult2">
+        select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
+        from tbl_emp e
+        left join tbl_dept d on e.d_id = d.d_id
+    </select>
+
+    <select id="getByLike" resultMap="empResult2">
+        select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
+        from tbl_emp e
+        left join tbl_dept d on e.d_id = d.d_id
+        where e.e_name like "%"#{mohu}"%"
+    </select>
+
+    <update id="updateById">
+        update tbl_emp
+        set e_name=#{eName},
+            e_age=#{eAge},
+            e_gender=#{eGender},
+            d_id=#{dept.dId}
+        where e_id = #{eId}
+    </update>
+
+    <delete id="deleteById" parameterType="int">
+        delete from tbl_emp
+        where e_ id=#{eId}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="java.util.Set">
+        delete from tbl_emp
+        where e_id in
+              <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </delete>
+
+</mapper>
