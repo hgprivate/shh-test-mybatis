@@ -14,7 +14,6 @@ import java.util.List;
  * 一对多、多对一、模糊匹配
  */
 public class MybatisHighLevelTest {
-
     /**
      * 模糊匹配
      *      - where uname like "%"#{c}"%"   （推荐）
@@ -93,5 +92,4 @@ public class MybatisHighLevelTest {
             deptList.forEach(System.out::println);
         }
     }
-
 }
