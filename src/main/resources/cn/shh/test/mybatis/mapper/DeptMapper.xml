@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.shh.test.mybatis.mapper.DeptMapper">
-    <!--一对多-->
+    <!-- 一对多 -->
     <resultMap id="deptResult" type="Dept">
         <id column="d_id" property="dId"/>
         <result column="d_name" property="dName"/>
@@ -14,35 +12,48 @@
             <result column="e_gender" property="eGender"/>
         </collection>
     </resultMap>
-    <!--一对多-->
+    <!-- 一对多 -->
     <resultMap id="deptResult2" type="Dept">
         <id column="d_id" property="dId"/>
         <result column="d_name" property="dName"/>
-        <collection property="emps" select="cn.shh.test.mybatis.mapper.EmpMapper.getEmpById" column="d_id"/>
+        <collection property="emps" select="cn.shh.test.mybatis.mapper.EmpMapper.getEmpsByDeptId" column="d_id"/>
     </resultMap>
+
+    <sql id="deptColumns">
+        d_id, d_name
+    </sql>
 
     <insert id="insert">
         insert into tbl_dept(d_name)
         values (#{dName})
     </insert>
+    <insert id="insertBatch">
+        insert into tbl_dept(d_name)
+        values
+            <foreach collection="deptList" item="dept" separator=",">
+                (#{dept.dName})
+            </foreach>
+    </insert>
 
     <select id="getDeptById" parameterType="int" resultMap="deptResult">
-        select d.d_id, d.d_name, e.e_id, e.e_name, e.e_age, e.e_gender
+        select <include refid="deptColumns"></include>, e.e_id, e.e_name, e.e_age, e.e_gender
         from tbl_dept d
-        left join tbl_emp e on e.d_id = d.d_id
+            left join tbl_emp e on e.d_id = d.d_id
         where d.d_id = #{dId}
     </select>
-
     <select id="getAllDept" resultMap="deptResult">
         select d.d_id, d.d_name, e.e_id, e.e_name, e.e_age, e.e_gender
         from tbl_dept d
-        left join tbl_emp e on e.d_id = d.d_id
+            left join tbl_emp e on e.d_id = d.d_id
     </select>
-
-    <select id="getByLike" resultType="Dept">
-        select d.d_id, d.d_name, e.e_id, e.e_name, e.e_age, e.e_gender
+    <select id="getDeptByIdStep" parameterType="int" resultMap="deptResult2">
+        select <include refid="deptColumns"></include>
         from tbl_dept d
-        left join tbl_emp e on e.d_id = d.d_id
+        where d.d_id = #{dId}
+    </select>
+    <select id="getByLike" resultType="Dept">
+        select <include refid="deptColumns"></include>
+        from tbl_dept d
         where d_name like "%"#{mohu}"%"
     </select>
 
@@ -56,16 +67,13 @@
         delete from tbl_dept
         where d_id=#{dId}
     </delete>
-
     <delete id="deleteByIds" parameterType="String">
         delete from tbl_dept
         where d_id in (${dIds})
     </delete>
-
     <delete id="deleteByIds2" parameterType="java.util.Set">
         delete from tbl_dept
         where d_id in
             <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
     </delete>
-
 </mapper>

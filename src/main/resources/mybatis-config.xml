@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-            "http://mybatis.org/dtd/mybatis-3-config.dtd">
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <!--定义属性-->
+    <!--
+        mybatis配置文件中标签使用需要按照指定顺序来编写设置：
+        (properties?,settings?,typeAliases?,typeHandlers?,objectFactory?,objectWrapperFactory?,
+        reflectorFactory?,plugins?,environments?,databaseIdProvider?,mappers?)".
+    -->
+    <!-- 1.属性 -->
     <properties resource="jdbc.properties"/>
 
-    <!--设置mybatis功能-->
+    <!-- 2.设置 -->
     <settings>
         <!--<setting name="logImpl" value="LOG4J2"/>-->
         <setting name="logImpl" value="STDOUT_LOGGING"/>
@@ -16,31 +21,63 @@
         <setting name="cacheEnabled" value="true"/>
     </settings>
 
-    <!--设置类型别名-->
+    <!--
+        3.类型别名
+        简介：类型别名可为Java类型设置一个缩写名字。 它仅用于XML配置，意在降低冗余的全限定类名书写。
+    -->
     <typeAliases>
         <!--<typeAlias alias="User" type="cn.shh.test.mybatis.pojo.User"/>-->
         <package name="cn.shh.test.mybatis.pojo"/>
     </typeAliases>
-    
+
+    <!--
+        4.类型处理器
+        简介：MyBatis 在设置预处理语句（PreparedStatement）中的参数或从结果集中取出一个值时， 都会
+             用类型处理器将获取到的值以合适的方式转换成 Java 类型。
+    -->
+    <typeHandlers>
+        <typeHandler handler="cn.shh.test.mybatis.handdle.ExampleTypeHandler"/>
+    </typeHandlers>
+
+    <!--
+        5.对象工厂
+        简介：每次 MyBatis 创建结果对象的新实例时，它都会使用一个对象工厂（ObjectFactory）实例来完成
+             实例化工作。
+    -->
+    <!--<objectFactory type=""></objectFactory>-->
+    <!--
+        6.对象包装工厂
+    -->
+    <!--<objectWrapperFactory type=""></objectWrapperFactory>-->
+    <!--
+        7.反射工厂
+    -->
+    <!--<reflectorFactory type=""></reflectorFactory>-->
+
+    <!--
+        8.插件
+        简介：MyBatis 允许你在映射语句执行过程中的某一点进行拦截调用。默认情况下，MyBatis允许使用插件
+             来拦截的方法调用
+    -->
     <plugins>
         <!--分页插件-->
         <plugin interceptor="com.github.pagehelper.PageInterceptor"></plugin>
     </plugins>
 
     <!--
+        9.环境
         environments标签：配置环境信息。
             - delfault：设置默认启用的环境（唯一）。
             - id：环境ID。
         transactionManager标签：
             - type属性，可选属性值有2个：
-                - JDBC：这个配置直接使用了 JDBC 的提交和回滚功能，它依赖从数据源获得的连接来管理事务作用域。
-                - MANAGED：它从不提交或回滚一个连接，而是让容器来管理事务的整个生命周期。
+                - JDBC：直接使用了JDBC的提交和回滚功能，依赖从数据源获得的连接来管理事务作用域。
+                - MANAGED：不提交或回滚，而是让容器来管理事务。
         dataSource标签：
             - type属性，可选属性值有3个：
-                - UNPOOLED：每次请求时都会打开和关闭连接。
+                - UNPOOLED：不使用廉洁池技术，每次请求都会打开和关闭连接。
                 - POOLED：使用池化技术。
-                - JNDI：这个数据源实现是为了能在如 EJB 或应用服务器这类容器中使用，容器可以集中或在外部配置数据源，
-                        然后放置一个 JNDI 上下文的数据源引用。
+                - JNDI：适配EJB或应用服务器这类容器，使用JNDI上下文数据源。
     -->
     <environments default="dev">
         <environment id="dev">
@@ -56,14 +93,19 @@
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
                 <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3307/test_ssm?serverTimezone=UTC"/>
+                <property name="url" value="jdbc:mysql://localhost:3306/test_ssm?serverTimezone=UTC"/>
                 <property name="username" value="root"/>
-                <property name="password" value="root666"/>
+                <property name="password" value="mysql368.cn"/>
             </dataSource>
         </environment>
     </environments>
 
-    <!--映射器-->
+    <!--
+        10.数据库厂商标识
+    -->
+    <!--<databaseIdProvider type=""></databaseIdProvider>-->
+
+    <!--11.映射器-->
     <mappers>
         <!--<mapper resource="mappers/UserMapper.xml"/>-->
         <package name="cn.shh.test.mybatis.mapper"/>

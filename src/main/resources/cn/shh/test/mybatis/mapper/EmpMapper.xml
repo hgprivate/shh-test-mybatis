@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.shh.test.mybatis.mapper.EmpMapper">
-    <!--多对一-->
+    <!-- 多对一 -->
     <resultMap id="empResult" type="Emp">
         <id column="e_id" property="eId"/>
         <result column="e_name" property="eName"/>
@@ -12,7 +10,7 @@
         <result column="d_id" property="dept.dId"/>
         <result column="d_name" property="dept.dName"/>
     </resultMap>
-    <!--多对一，使用association标签-->
+    <!-- 多对一，使用association标签 -->
     <resultMap id="empResult2" type="Emp">
         <id column="e_id" property="eId"/>
         <result column="e_name" property="eName"/>
@@ -23,33 +21,52 @@
             <result column="d_name" property="dName"/>
         </association>
     </resultMap>
-    <!--多对一，使用association标签实现延迟加载-->
+    <!-- 多对一，使用association标签实现延迟加载 -->
     <resultMap id="empResult3" type="Emp">
         <id column="e_id" property="eId"/>
         <result column="e_name" property="eName"/>
         <result column="e_age" property="eAge"/>
         <result column="e_gender" property="eGender"/>
-        <association property="dept" select="cn.shh.test.mybatis.mapper.DeptMapper.getDeptById" column="d_id"/>
+        <association fetchType="lazy" property="dept" select="cn.shh.test.mybatis.mapper.DeptMapper.getDeptById" column="d_id"/>
     </resultMap>
+
+    <sql id="empColumns">
+        e_id, e_name, e_age, e_gender
+    </sql>
 
     <insert id="insert">
         insert into tbl_emp(e_name, e_age, e_gender, d_id)
         values (#{eName}, #{eAge}, #{eGender}, #{dId})
     </insert>
+    <insert id="insertBatch" parameterType="list">
+        insert into tbl_emp(e_name, e_age, e_gender, d_id)
+        values
+            <foreach collection="empList" item="emp" separator=",">
+                (#{emp.eName}, #{emp.eAge, #{emp.eGender}, #{emp.dId})
+            </foreach>
+    </insert>
 
-    <select id="getEmpById" parameterType="int" resultMap="empResult3">
-        select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
+    <select id="getEmpById" parameterType="int" resultMap="empResult2">
+        select <include refid="empColumns"></include>, d_id, d.d_name
         from tbl_emp e
-        left join tbl_dept d on e.d_id = d.d_id
+            left join tbl_dept d on e.d_id = d.d_id
         where e.e_id = #{eId}
     </select>
-
-    <select id="getAllEmp" resultMap="empResult3">
+    <select id="getEmpByIdStep" parameterType="int" resultMap="empResult3">
+        select <include refid="empColumns"></include>, d_id
+        from tbl_emp e
+        where e.e_id = #{eId}
+    </select>
+    <select id="getEmpsByDeptId" parameterType="int" resultType="emp">
+        select <include refid="empColumns"></include>
+        from tbl_emp e
+        where e.d_id = #{dId}
+    </select>
+    <select id="getAllEmp" resultMap="empResult2">
         select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
         from tbl_emp e
         left join tbl_dept d on e.d_id = d.d_id
     </select>
-
     <select id="getByLike" resultMap="empResult3">
         select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
         from tbl_emp e
@@ -70,16 +87,15 @@
         delete from tbl_emp
         where e_id=#{eId}
     </delete>
-
     <delete id="deleteByIds" parameterType="String">
         delete from tbl_emp
         where e_id in (${eIds})
     </delete>
-
     <delete id="deleteByIds2" parameterType="java.util.Set">
         delete from tbl_emp
-        where e_id in
-            <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+        where
+            <foreach collection="ids" item="id" open="e_id in (" close=")" separator=",">
+              #{id}
+            </foreach>
     </delete>
-
 </mapper>

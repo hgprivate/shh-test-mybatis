@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.shh.test.mybatis.mapper.StudyMybatisMapper">
+    <select id="checkLogin" resultType="User">
+        select *
+        from tbl_user
+        where uname = #{param1} and password = #{param2}
+    </select>
+
+    <select id="checkLogin2" resultType="User">
+        select *
+        from tbl_user
+        where uname = #{username} and password = #{password}
+    </select>
+</mapper>

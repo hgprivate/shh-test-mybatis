@@ -23,20 +23,22 @@
         <association property="dept" select="cn.shh.test.mybatis.mapper.DeptMapper.getDeptById" column="d_id"/>
     </resultMap>
 
-    <insert id="insert">
-        insert into tbl_emp(e_name, e_age, e_gender, d_id)
-        values (#{eName}, #{eAge}, #{eGender}, #{dId})
-    </insert>
+    <sql id="empColumns">
+        e_id, e_name, e_age, e_gender
+    </sql>
+
+    <!-- foreach -->
     <insert id="insertBatch">
         insert into tbl_emp
         values
-            <foreach collection="emps" item="emp" separator=",">
-                (null, #{emp.eName}, #{emp.eAge}, #{emp.eGender}, #{emp.dept.dId})
-            </foreach>
+        <foreach collection="emps" item="emp" separator=",">
+            (null, #{emp.eName}, #{emp.eAge}, #{emp.eGender}, #{emp.dept.dId})
+        </foreach>
     </insert>
 
+    <!-- where、if -->
     <select id="getEmp" parameterType="Emp" resultMap="empResult2">
-        select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
+        select <include refid="empColumns"/>, d.d_id, d.d_name
         from tbl_emp e
                  left join tbl_dept d on e.d_id = d.d_id
         <where>
@@ -50,6 +52,7 @@
         </where>
     </select>
 
+    <!-- where、choose、when、otherwise-->
     <select id="getEmpByChoose" parameterType="Emp" resultMap="empResult2">
         select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
         from tbl_emp e
@@ -66,40 +69,55 @@
                 </otherwise>
             </choose>
         </where>
-
     </select>
 
-    <select id="getAllEmp" resultMap="empResult2">
-        select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
-        from tbl_emp e
-                 left join tbl_dept d on e.d_id = d.d_id
-    </select>
-
+    <!-- bind -->
     <select id="getByLike" resultMap="empResult2">
+        <bind name="likemohu" value="'%' + mohu + '%'" />
         select e.e_id, e.e_name, e.e_age, e.e_gender, d.d_id, d.d_name
         from tbl_emp e
                  left join tbl_dept d on e.d_id = d.d_id
-        where e.e_name like "%"#{mohu}"%"
+        <where>
+            e.e_name like "%"#{mohu}"%"
+        </where>
     </select>
 
+    <!-- set -->
     <update id="updateById">
         update tbl_emp
-        set e_name=#{eName},
-            e_age=#{eAge},
-            e_gender=#{eGender},
-            d_id=#{dept.dId}
-        where e_id = #{eId}
+        <set>
+            <if test="eName != null">e_name=#{eName},</if>
+            <if test="eAge != null">e_age=#{eAge},</if>
+            <if test="eGender != null">e_gender=#{eGender},</if>
+            <if test="dept != null">d_id=#{dept.dId},</if>
+        </set>
+        <where>
+            e_id = #{eId}
+        </where>
     </update>
 
-    <delete id="deleteById" parameterType="int">
-        delete from tbl_emp
-        where e_id=#{eId}
-    </delete>
+    <!-- trim -->
+    <update id="updateById2">
+        update tbl_emp
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="eName != null">e_name=#{eName},</if>
+            <if test="eAge != null">e_age=#{eAge},</if>
+            <if test="eGender != null">e_gender=#{eGender},</if>
+            <if test="dept != null">d_id=#{dept.dId},</if>
+        </trim>
+        <where>
+            e_id = #{eId}
+        </where>
+    </update>
 
+    <!-- foreach -->
     <delete id="deleteByIds" parameterType="java.util.Set">
         delete from tbl_emp
-        where e_id in
-        <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+        <where>
+            <foreach collection="ids" item="id" open="e_id in (" close=")" separator=",">
+                #{id}
+            </foreach>
+        </where>
     </delete>
 
 </mapper>

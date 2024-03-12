@@ -7,11 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 
 public interface UserMapper {
-    public void insert(User user);
-    public User getById(@Param("id") int id);
-    public List<User> getAll();
+    int insert(User user);
+    User getById(@Param("id") int id);
+    List<User> getAll();
     List<User> getByLike(@Param("mohu") String mohu);
-    public void updateById(User user);
-    public int deleteById(@Param("id") int id);
-    public int deleteByIds(@Param("ids") HashSet<Integer> ids);
+    int updateById(User user);
+    int deleteById(@Param("id") int id);
+    int deleteByIds(@Param("ids") HashSet<Integer> ids);
 }

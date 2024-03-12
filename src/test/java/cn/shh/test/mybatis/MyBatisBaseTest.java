@@ -5,31 +5,38 @@ import cn.shh.test.mybatis.pojo.User;
 import cn.shh.test.mybatis.util.MyBatisUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 import java.util.HashSet;
 import java.util.List;
 
 /**
- * 增删改查（基础）
+ * mybatis基础增删改查
  */
 public class MyBatisBaseTest {
-
+    /**
+     * 插入一条数据
+     */
     @Test
     public void testInsert(){
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
         try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             User user = new User();
-            user.setUname("李四3");
+            user.setUname("李四4");
             user.setPassword("123321");
-            user.setAge(19);
+            user.setAge(24);
             user.setGender("男");
             user.setEmail("lisi@qq.com");
-            userMapper.insert(user);
-            System.out.println("插入成功。");
+            int result = userMapper.insert(user);
+            System.out.println(result > 0 ? "success " + result : "error " + result);
+            System.out.println("user = " + user);
         }
     }
 
+    /**
+     * 根据用户ID获取其用户数据
+     */
     @Test
     public void testGetById(){
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
@@ -40,6 +47,9 @@ public class MyBatisBaseTest {
         }
     }
 
+    /**
+     * 获取表中所有数据
+     */
     @Test
     public void testGetAll(){
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
@@ -50,23 +60,29 @@ public class MyBatisBaseTest {
         }
     }
 
+    /**
+     * 修改指定用户ID的数据
+     */
     @Test
     public void testUpdate(){
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
         try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             User user = new User();
-            user.setId(5);
+            user.setId(11);
             user.setUname("王五");
             user.setPassword("123321");
             user.setAge(19);
             user.setGender("男");
             user.setEmail("wangwu@qq.com");
-            userMapper.updateById(user);
-            System.out.println("修改成功");
+            int result = userMapper.updateById(user);
+            System.out.println(result > 0 ? "success" : "error");
         }
     }
 
+    /**
+     * 删除指定用户ID的数据
+     */
     @Test
     public void testDelete(){
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
@@ -74,11 +90,11 @@ public class MyBatisBaseTest {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             User user = new User();
             HashSet<Integer> ids = new HashSet<>();
-            ids.add(3);
-            ids.add(4);
-            ids.add(5);
-            userMapper.deleteByIds(ids);
-            System.out.println("删除成功");
+            ids.add(6);
+            ids.add(7);
+            ids.add(11);
+            int result = userMapper.deleteByIds(ids);
+            System.out.println(result > 0 ? "success " + result : "error " + result);
         }
     }
 }

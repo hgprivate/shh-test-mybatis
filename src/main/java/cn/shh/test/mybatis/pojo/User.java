@@ -5,9 +5,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * 实体类User
- */
 @Data
 @NoArgsConstructor
 public class User implements Serializable {
@@ -17,5 +14,4 @@ public class User implements Serializable {
     private Integer age;
     private String gender;
     private String email;
-
 }
