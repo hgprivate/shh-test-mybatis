@@ -18,9 +18,9 @@ public class MyBatisBaseTest {
      * 插入一条数据
      */
     @Test
-    public void testInsert(){
+    public void testInsert() {
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             User user = new User();
             user.setUname("李四4");
@@ -38,9 +38,10 @@ public class MyBatisBaseTest {
      * 根据用户ID获取其用户数据
      */
     @Test
-    public void testGetById(){
+    public void testGetById() {
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
+            // userMapper其实是一个代理对象（MapperProxy）
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             User user = userMapper.getById(1);
             System.out.println("user = " + user);
@@ -51,9 +52,9 @@ public class MyBatisBaseTest {
      * 获取表中所有数据
      */
     @Test
-    public void testGetAll(){
+    public void testGetAll() {
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             List<User> userList = userMapper.getAll();
             userList.forEach(System.out::println);
@@ -64,9 +65,9 @@ public class MyBatisBaseTest {
      * 修改指定用户ID的数据
      */
     @Test
-    public void testUpdate(){
+    public void testUpdate() {
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             User user = new User();
             user.setId(11);
@@ -84,9 +85,9 @@ public class MyBatisBaseTest {
      * 删除指定用户ID的数据
      */
     @Test
-    public void testDelete(){
+    public void testDelete() {
         SqlSessionFactory sqlSessionFactory = MyBatisUtil.getSqlSessionFactory();
-        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)){
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(true)) {
             UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
             User user = new User();
             HashSet<Integer> ids = new HashSet<>();
