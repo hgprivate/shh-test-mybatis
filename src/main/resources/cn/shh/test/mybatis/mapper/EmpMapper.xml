@@ -47,13 +47,13 @@
     </insert>
 
     <select id="getEmpById" parameterType="int" resultMap="empResult2">
-        select <include refid="empColumns"></include>, d_id, d.d_name
+        select <include refid="empColumns"></include>, d.d_id, d.d_name
         from tbl_emp e
             left join tbl_dept d on e.d_id = d.d_id
         where e.e_id = #{eId}
     </select>
     <select id="getEmpByIdStep" parameterType="int" resultMap="empResult3">
-        select <include refid="empColumns"></include>, d_id
+        select <include refid="empColumns"></include>, e.d_id
         from tbl_emp e
         where e.e_id = #{eId}
     </select>

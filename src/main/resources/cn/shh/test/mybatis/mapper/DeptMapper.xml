@@ -36,7 +36,7 @@
     </insert>
 
     <select id="getDeptById" parameterType="int" resultMap="deptResult">
-        select <include refid="deptColumns"></include>, e.e_id, e.e_name, e.e_age, e.e_gender
+        select d.d_id, d.d_name, e.e_id, e.e_name, e.e_age, e.e_gender
         from tbl_dept d
             left join tbl_emp e on e.d_id = d.d_id
         where d.d_id = #{dId}
