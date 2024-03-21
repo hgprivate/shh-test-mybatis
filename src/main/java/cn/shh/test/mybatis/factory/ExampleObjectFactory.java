@@ -16,7 +16,6 @@ import java.util.Properties;
  *   ObjectFactory 接口很简单，它包含两个创建实例用的方法，一个是处理默认无参构造方法的，另外一个
  *   是处理带参数的构造方法的。 另外，setProperties 方法可以被用来配置 ObjectFactory，在初始化
  *   你的 ObjectFactory 实例后，objectFactory 元素体中定义的属性会被传递给setProperties方法。
- *
  */
 public class ExampleObjectFactory extends DefaultObjectFactory {
     @Override
