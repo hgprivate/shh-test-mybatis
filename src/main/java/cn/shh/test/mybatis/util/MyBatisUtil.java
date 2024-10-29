@@ -14,41 +14,24 @@ import java.io.InputStream;
 public class MyBatisUtil {
     private static final String RESOURCE = "mybatis-config.xml";
 
-    public static SqlSessionFactory getSqlSessionFactory(){
-        InputStream is = null;
-        try {
-            is = Resources.getResourceAsStream(RESOURCE);
-            SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(is);
-            return sessionFactory;
+    public static SqlSessionFactory getSqlSessionFactory() {
+        try (
+                InputStream is = Resources.getResourceAsStream(RESOURCE);
+        ) {
+            return new SqlSessionFactoryBuilder().build(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }finally {
-            if (is != null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 
-    public static SqlSession getSqlSession(){
-        InputStream is = null;
-        try {
-            is = Resources.getResourceAsStream(RESOURCE);
+    public static SqlSession getSqlSession() {
+        try (
+                InputStream is = Resources.getResourceAsStream(RESOURCE);
+        ) {
             SqlSessionFactory sessionFactory = new SqlSessionFactoryBuilder().build(is);
             return sessionFactory.openSession(true);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }finally {
-            if (is != null){
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 }

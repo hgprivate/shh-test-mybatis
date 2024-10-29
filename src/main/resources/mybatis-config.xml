@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE configuration
-        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <!--
         mybatis配置文件中标签使用需要按照指定顺序来编写设置：
@@ -75,7 +73,7 @@
                 - MANAGED：不提交或回滚，而是让容器来管理事务。
         dataSource标签：
             - type属性，可选属性值有3个：
-                - UNPOOLED：不使用廉洁池技术，每次请求都会打开和关闭连接。
+                - UNPOOLED：不使用连接池技术，每次请求都会打开和关闭连接。
                 - POOLED：使用池化技术。
                 - JNDI：适配EJB或应用服务器这类容器，使用JNDI上下文数据源。
     -->

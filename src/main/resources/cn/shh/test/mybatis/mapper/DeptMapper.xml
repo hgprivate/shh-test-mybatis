@@ -16,7 +16,7 @@
     <resultMap id="deptResult2" type="Dept">
         <id column="d_id" property="dId"/>
         <result column="d_name" property="dName"/>
-        <collection property="emps" select="cn.shh.test.mybatis.mapper.EmpMapper.getEmpsByDeptId" column="d_id"/>
+        <collection column="d_id" property="emps" select="cn.shh.test.mybatis.mapper.EmpMapper.getEmpsByDeptId"/>
     </resultMap>
 
     <sql id="deptColumns">
